@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Create Fitness Profile - FitBuddy{% endblock %}
+
+{% block content %}
+<div style="max-width: 680px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.5px;">Your Fitness Profile</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Provide your physiological and fitness parameters. FitBuddy's Gemini engine uses these to build your optimal 7-day routine.
+    </p>
+  </div>
+
+  {% if error %}
+  <div class="alert alert-danger" id="form-error-alert">
+    <strong>Error:</strong> {{ error }}
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <form action="/profile" method="POST" data-loading="true" data-loading-text="Saving Profile...">
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name" class="form-label">Full or Preferred Name *</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Alex Morgan" value="{{ form_data.name if form_data else '' }}" required minlength="2" maxlength="100">
+        <span class="form-text">Used to personalize your weekly fitness schedule.</span>
+      </div>
+
+      <div class="grid grid-cols-2">
+        <!-- Age -->
+        <div class="form-group">
+          <label for="age" class="form-label">Age (Years) *</label>
+          <input type="number" id="age" name="age" class="form-control" placeholder="e.g. 28" value="{{ form_data.age if form_data else '' }}" required min="12" max="120">
+        </div>
+
+        <!-- Weight -->
+        <div class="form-group">
+          <label for="weight" class="form-label">Weight (kg) *</label>
+          <input type="number" step="0.1" id="weight" name="weight" class="form-control" placeholder="e.g. 72.5" value="{{ form_data.weight if form_data else '' }}" required min="20" max="400">
+        </div>
+      </div>
+
+      <!-- Primary Fitness Goal -->
+      <div class="form-group">
+        <label for="goal" class="form-label">Primary Fitness Goal *</label>
+        <select id="goal" name="goal" class="form-select" required>
+          <option value="Weight Loss" {% if form_data and form_data.goal == 'Weight Loss' %}selected{% endif %}>🔥 Weight Loss (Fat burn, metabolic conditioning, caloric deficit support)</option>
+          <option value="Muscle Gain" {% if form_data and form_data.goal == 'Muscle Gain' %}selected{% endif %}>💪 Muscle Gain (Hypertrophy, progressive overload, strength building)</option>
+          <option value="General Wellness" {% if not form_data or form_data.goal == 'General Wellness' %}selected{% endif %}>🌱 General Wellness (Mobility, cardiovascular health, longevity)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2">
+        <!-- Workout Intensity -->
+        <div class="form-group">
+          <label for="intensity" class="form-label">Workout Intensity *</label>
+          <select id="intensity" name="intensity" class="form-select" required>
+            <option value="Low" {% if form_data and form_data.intensity == 'Low' %}selected{% endif %}>Low (Gentle pace, low impact, active recovery)</option>
+            <option value="Medium" {% if not form_data or form_data.intensity == 'Medium' %}selected{% endif %}>Medium (Moderate exertion, balanced splits)</option>
+            <option value="High" {% if form_data and form_data.intensity == 'High' %}selected{% endif %}>High (High heart rate, challenging volume/loads)</option>
+          </select>
+        </div>
+
+        <!-- Experience Level -->
+        <div class="form-group">
+          <label for="experience_level" class="form-label">Experience Level *</label>
+          <select id="experience_level" name="experience_level" class="form-select" required>
+            <option value="Beginner" {% if not form_data or form_data.experience_level == 'Beginner' %}selected{% endif %}>Beginner (< 1 year training)</option>
+            <option value="Intermediate" {% if form_data and form_data.experience_level == 'Intermediate' %}selected{% endif %}>Intermediate (1-3 years training)</option>
+            <option value="Advanced" {% if form_data and form_data.experience_level == 'Advanced' %}selected{% endif %}>Advanced (3+ years consistent training)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem;">
+        <a href="/" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" id="save-profile-btn">Save & Proceed to Workout Plan ➔</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

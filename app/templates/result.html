@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}{{ plan_data.title }} - FitBuddy{% endblock %}
+
+{% block head_extra %}
+<style>
+  .day-tab-btn {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .day-tab-btn:hover {
+    color: var(--text-main);
+    border-color: var(--border-light);
+  }
+  .day-tab-btn.active {
+    background-color: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+    font-weight: 700;
+  }
+  .exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .exercise-table th {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: var(--text-sub);
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .exercise-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+  }
+  .exercise-table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+  @media print {
+    .navbar, .footer, .no-print { display: none !important; }
+    body { background: #fff !important; color: #000 !important; }
+    .card { border: 1px solid #ccc !important; box-shadow: none !important; background: transparent !important; }
+    .day-plan-card { display: block !important; page-break-after: always; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 950px; margin: 0 auto;">
+  <!-- Header & Actions -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <span class="badge badge-primary">{{ workout_plan.goal }}</span>
+        <span class="badge badge-blue">{{ workout_plan.intensity }} Intensity</span>
+        <span class="badge badge-orange">Version {{ workout_plan.version }}</span>
+      </div>
+      <h1 style="font-size: 2.15rem; font-weight: 800; letter-spacing: -0.5px;">{{ plan_data.title }}</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Generated for <strong>{{ user.name }}</strong> • {{ workout_plan.created_at.strftime('%B %d, %Y at %H:%M') }}
+      </p>
+    </div>
+    
+    <div class="no-print" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <a href="/workout/{{ workout_plan.id }}/feedback" class="btn btn-primary" id="refine-plan-btn">
+        ✨ Refine Plan (Feedback)
+      </a>
+      <button onclick="window.print()" class="btn btn-secondary" id="print-plan-btn">
+        Print PDF
+      </button>
+      <a href="/profile/{{ user.id }}" class="btn btn-secondary">
+        👤 Profile
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary Box -->
+  {% if plan_data.summary %}
+  <div class="card" style="margin-bottom: 1.75rem; background: rgba(16, 185, 129, 0.04); border-color: rgba(16, 185, 129, 0.2);">
+    <h3 style="font-size: 1rem; color: #34d399; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+      Program Overview
+    </h3>
+    <p style="color: var(--text-sub); font-size: 0.95rem; line-height: 1.5;">
+      {{ plan_data.summary }}
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Day Selection Tabs -->
+  <div class="no-print" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+    <button class="day-tab-btn active" data-day="all">All 7 Days</button>
+    {% for day in plan_data.days %}
+    <button class="day-tab-btn" data-day="{{ day.day }}">Day {{ day.day }}</button>
+    {% endfor %}
+  </div>
+
+  <!-- 7 Days Grid/Cards -->
+  <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+    {% for day in plan_data.days %}
+    <div class="card day-plan-card" data-day="{{ day.day }}">
+      <!-- Day Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Day {{ day.day }}</span>
+          <h2 style="font-size: 1.4rem; font-weight: 700;">{{ day.focus }}</h2>
+        </div>
+        <span class="badge badge-blue">{{ day.exercises|length }} Exercises</span>
+      </div>
+
+      <!-- Warmup -->
+      {% if day.warmup and day.warmup|length > 0 %}
+      <div style="margin-bottom: 1.25rem; background: rgba(6, 182, 212, 0.05); padding: 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-cyan);">
+        <strong style="color: #38bdf8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">🔥 Dynamic Warm-Up</strong>
+        <ul style="margin-top: 0.5rem; margin-left: 1.25rem; color: var(--text-sub); font-size: 0.9rem;">
+          {% for w in day.warmup %}
+          <li>{{ w }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Exercises Table -->
+      <div style="overflow-x: auto;">
+        <table class="exercise-table">
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets</th>
+              <th>Reps / Duration</th>
+              <th>Rest</th>
+              <th>Form & Technique Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ex in day.exercises %}
+            <tr>
+              <td><strong style="color: #fff;">{{ ex.name }}</strong></td>
+              <td>{{ ex.sets if ex.sets is not none else '-' }}</td>
+              <td>{{ ex.reps or '-' }}</td>
+              <td>{{ (ex.rest_seconds ~ 's') if ex.rest_seconds is not none else 'As needed' }}</td>
+              <td style="color: var(--text-muted); font-size: 0.85rem;">{{ ex.notes or '-' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cooldown -->
+      {% if day.cooldown and day.cooldown|length > 0 %}
+      <div style="margin-top: 1rem; margin-bottom: 1rem; background: rgba(249, 115, 22, 0.05); padding: 0.85rem 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-orange);">
+        <strong style="color: #fb923c; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">❄️ Cool-Down Stretches</strong>
+        <ul style="margin-top: 0.4rem; margin-left: 1.25rem; color: var(--text-sub); font-size: 0.88rem;">
+          {% for c in day.cooldown %}
+          <li>{{ c }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Daily Recovery -->
+      {% if day.recovery %}
+      <div style="margin-top: 0.75rem; background: rgba(16, 185, 129, 0.05); padding: 0.85rem 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+        <strong style="color: #34d399; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">💡 Daily Recovery Guidance</strong>
+        <p style="color: var(--text-sub); font-size: 0.88rem; margin-top: 0.25rem;">
+          {{ day.recovery }}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Safety Disclaimer -->
+  <div class="disclaimer-box" style="margin-top: 2rem;">
+    <strong>Medical & Safety Notice:</strong> {{ plan_data.safety_disclaimer }}
+  </div>
+</div>
+{% endblock %}

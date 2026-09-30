@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - FitBuddy{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 0 auto;">
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.25rem;">
+        <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.5px;">Admin Control Center</h1>
+        <span class="badge badge-primary">Authorized</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Logged in as <strong>{{ admin_user }}</strong></p>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="/api/health" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem;">⚡ API Health</a>
+      <a href="/docs" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem;">📚 Swagger Docs</a>
+      <a href="/admin/logout" class="btn btn-danger" style="font-size: 0.85rem;" id="admin-logout-btn">Logout</a>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Cards -->
+  <div class="grid grid-cols-4" style="margin-bottom: 2.5rem;">
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Total Users</span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0.35rem; color: #fff;">{{ metrics.total_users }}</h2>
+    </div>
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Generated Plans</span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0.35rem; color: #34d399;">{{ metrics.total_plans }}</h2>
+    </div>
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Feedback Revisions</span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0.35rem; color: #fb923c;">{{ metrics.total_feedback }}</h2>
+    </div>
+    <div class="card" style="padding: 1.5rem; text-align: center;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Nutrition Tips</span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; margin-top: 0.35rem; color: #38bdf8;">{{ metrics.total_tips }}</h2>
+    </div>
+  </div>
+
+  <!-- Users Table Section -->
+  <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+      <h3 style="font-size: 1.25rem; font-weight: 700;">Registered Fitness Profiles</h3>
+      <span class="badge badge-blue">{{ users|length }} Listed</span>
+    </div>
+
+    {% if users and users|length > 0 %}
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border); text-align: left; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">
+            <th style="padding: 0.75rem 1rem;">ID</th>
+            <th style="padding: 0.75rem 1rem;">User Name</th>
+            <th style="padding: 0.75rem 1rem;">Age / Weight</th>
+            <th style="padding: 0.75rem 1rem;">Fitness Goal</th>
+            <th style="padding: 0.75rem 1rem;">Intensity</th>
+            <th style="padding: 0.75rem 1rem;">Plans Count</th>
+            <th style="padding: 0.75rem 1rem; text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <td style="padding: 0.85rem 1rem; color: var(--text-muted);">#{{ u.id }}</td>
+            <td style="padding: 0.85rem 1rem;">
+              <strong style="color: #fff;">{{ u.name }}</strong>
+            </td>
+            <td style="padding: 0.85rem 1rem; color: var(--text-sub);">
+              {{ u.age }} yrs • {{ u.weight }} kg
+            </td>
+            <td style="padding: 0.85rem 1rem;">
+              <span class="badge badge-primary">{{ u.goal }}</span>
+            </td>
+            <td style="padding: 0.85rem 1rem;">
+              <span class="badge badge-blue">{{ u.intensity }}</span>
+            </td>
+            <td style="padding: 0.85rem 1rem; color: var(--text-sub);">
+              {{ u.workout_plans|length }}
+            </td>
+            <td style="padding: 0.85rem 1rem; text-align: right;">
+              <a href="/admin/users/{{ u.id }}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                Inspect
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+      No user profiles registered in database yet.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

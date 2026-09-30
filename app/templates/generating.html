@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Building Your 7-Day Plan - FitBuddy{% endblock %}
+
+{% block head_extra %}
+<meta http-equiv="refresh" content="0;url=/workout/do-generate/{{ user.id }}">
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 4rem auto; text-align: center;">
+  <div class="card" style="padding: 3rem 2rem;">
+    <div class="spinner" style="width: 3rem; height: 3rem; border-width: 4px; border-top-color: var(--primary); margin-bottom: 1.5rem;"></div>
+    <h1 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.75rem;">Generating Your 7-Day Plan...</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+      FitBuddy and Gemini AI are analyzing your parameters (<strong>{{ user.goal }}</strong> • <strong>{{ user.intensity }}</strong>) to build your customized training microcycle.
+    </p>
+    <div style="margin-top: 1.5rem;">
+      <span class="badge badge-blue">Structuring Exercises & Recovery Protocol</span>
+    </div>
+  </div>
+</div>
+{% endblock %}
