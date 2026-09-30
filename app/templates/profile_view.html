@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.name }}'s Fitness Profile - FitBuddy{% endblock %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.5px;">{{ user.name }}</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Member since {{ user.created_at.strftime('%B %d, %Y') }}</p>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="/profile" class="btn btn-secondary">New Profile</a>
+      <a href="/workout/generate/{{ user.id }}" class="btn btn-primary" id="generate-plan-action-btn">⚡ Generate 7-Day Plan</a>
+    </div>
+  </div>
+
+  <!-- Profile Metrics Grid -->
+  <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Age</span>
+      <h3 style="font-size: 1.5rem; margin-top: 0.25rem;">{{ user.age }} <span style="font-size: 0.85rem; color: var(--text-muted);">yrs</span></h3>
+    </div>
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Weight</span>
+      <h3 style="font-size: 1.5rem; margin-top: 0.25rem;">{{ user.weight }} <span style="font-size: 0.85rem; color: var(--text-muted);">kg</span></h3>
+    </div>
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Goal</span>
+      <div style="margin-top: 0.5rem;">
+        <span class="badge badge-primary">{{ user.goal }}</span>
+      </div>
+    </div>
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Intensity</span>
+      <div style="margin-top: 0.5rem;">
+        <span class="badge badge-blue">{{ user.intensity }} ({{ user.experience_level }})</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Existing Workout Plans -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <h2 style="font-size: 1.25rem; font-weight: 700;">Workout Plans History</h2>
+      <span class="badge badge-blue">{{ user.workout_plans|length }} Saved</span>
+    </div>
+
+    {% if user.workout_plans and user.workout_plans|length > 0 %}
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        {% for plan in user.workout_plans %}
+          <div style="background: var(--bg-surface); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <strong>Plan #{{ plan.id }} (Version {{ plan.version }})</strong>
+                <span class="badge badge-primary">{{ plan.goal }}</span>
+              </div>
+              <p style="color: var(--text-muted); font-size: 0.85rem;">
+                Created: {{ plan.created_at.strftime('%Y-%m-%d %H:%M') }}
+                {% if plan.feedbacks|length > 0 %} • {{ plan.feedbacks|length }} refinement(s){% endif %}
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="/workout/{{ plan.id }}" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.45rem 0.9rem;">View Plan</a>
+              <a href="/workout/{{ plan.id }}/feedback" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.45rem 0.9rem;">Refine Plan</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+        <p style="margin-bottom: 1.25rem;">No workout plans generated yet for this profile.</p>
+        <a href="/workout/generate/{{ user.id }}" class="btn btn-primary">Generate Your First 7-Day Plan</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

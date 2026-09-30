@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}FitBuddy - AI-Powered Personalized Fitness & Nutrition{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Generate personalized 7-day workout routines and nutrition guidance tailored to your goals with FitBuddy and Gemini AI.{% endblock %}">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="nav-brand" id="brand-link">
+        FitBuddy <span class="brand-badge">AI 2.0</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link" id="nav-home">Home</a></li>
+          <li><a href="/profile" class="nav-link" id="nav-profile">Create Profile</a></li>
+          <li><a href="/nutrition" class="nav-link" id="nav-nutrition">Nutrition Tips</a></li>
+          <li><a href="/admin/dashboard" class="nav-link" id="nav-admin">Admin</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Flash/Notification Container -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 3rem; flex: 1;">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container text-center">
+      <p>&copy; 2026 FitBuddy AI Application. Built with FastAPI, SQLAlchemy, and Google Gemini.</p>
+      <div class="disclaimer-box">
+        <strong>Health & Safety Disclaimer:</strong> FitBuddy provides general AI-driven fitness and wellness guidance for educational purposes. It is NOT medical advice, diagnosis, or treatment. Always consult with a certified healthcare professional before starting any new diet or exercise regimen.
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

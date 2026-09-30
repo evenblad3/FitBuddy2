@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}FitBuddy - AI Fitness & Workout Planner{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1 class="hero-title">
+    Reach your peak shape with <span class="gradient-text">Gemini AI</span>
+  </h1>
+  <p class="hero-subtitle">
+    Tailored 7-day workout plans, intelligent feedback updates, and targeted nutrition advice adapted to your exact physical profile and goals.
+  </p>
+  <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+    <a href="/profile" class="btn btn-primary" id="hero-get-started-btn">Start Your Plan</a>
+    <a href="/nutrition" class="btn btn-secondary" id="hero-nutrition-btn">Get Nutrition Tip</a>
+  </div>
+</section>
+
+<!-- Feature Showcase -->
+<section class="grid grid-cols-3" style="margin-top: 2rem;">
+  <div class="card">
+    <div class="badge badge-primary" style="margin-bottom: 0.75rem;">Step 1</div>
+    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Profile & Goals</h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+      Input your age, weight, target intensity, and select between Weight Loss, Muscle Gain, or General Wellness.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="badge badge-blue" style="margin-bottom: 0.75rem;">Step 2</div>
+    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">7-Day Structured Plan</h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+      Gemini AI generates daily breakdowns with warm-ups, exercises, set & rep schemes, rest periods, and recovery protocols.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="badge badge-orange" style="margin-bottom: 0.75rem;">Step 3</div>
+    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Interactive Revisions</h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+      Submit natural feedback like "More cardio" or "Add rest days" to iteratively refine your plan while preserving history.
+    </p>
+  </div>
+</section>
+
+<!-- Quick Nutrition Tip Section -->
+<section class="card" style="margin-top: 3rem; background: linear-gradient(135deg, rgba(19, 27, 46, 0.9), rgba(6, 182, 212, 0.05));">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2 style="font-size: 1.35rem; margin-bottom: 0.25rem;">Quick AI Nutrition & Recovery Guidance</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Select your fitness goal to receive immediate, practical guidance.</p>
+    </div>
+    <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+      <select id="tip-goal-select" class="form-select" style="width: auto;">
+        <option value="Weight Loss">Weight Loss</option>
+        <option value="Muscle Gain">Muscle Gain</option>
+        <option value="General Wellness" selected>General Wellness</option>
+      </select>
+      <button id="fetch-quick-tip-btn" class="btn btn-primary">Get Nutrition Tip</button>
+    </div>
+  </div>
+  <div id="quick-tip-result" style="margin-top: 1.25rem;"></div>
+</section>
+{% endblock %}
